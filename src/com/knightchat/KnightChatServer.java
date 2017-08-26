@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashSet;
+import java.util.Iterator;
 
 public class KnightChatServer {
 
@@ -115,9 +116,19 @@ public class KnightChatServer {
                         return;
                     }
 
-                    for (PrintWriter writer : writers) {
-                        System.out.println("MESSAGE " + name + ": " + input);
-                        writer.println("MESSAGE " + name + ": " + input);
+                    if (input.startsWith("/")) {
+                        Iterator iterator = names.iterator();
+                        String outString = "INFO " + "Users in this server: ";
+                        while(iterator.hasNext()) {
+                            outString += iterator.next() + ", ";
+                        }
+                        outString = outString.substring(0, outString.length() - 2);
+                        out.println(outString);
+                    } else {
+                        for (PrintWriter writer : writers) {
+                            System.out.println("MESSAGE " + name + ": " + input);
+                            writer.println("MESSAGE " + name + ": " + input);
+                        }
                     }
                 }
             } catch (IOException e) {
