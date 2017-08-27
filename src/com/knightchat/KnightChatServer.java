@@ -96,6 +96,10 @@ public class KnightChatServer {
                         if (!names.contains(name)) {
                             System.out.println("INFO: User " + name + " has joined. Welcome!");
                             names.add(name);
+                            for (PrintWriter writer : writers) {
+                                writer.println("INFO " + name + " has joined. Welcome!");
+                            }
+
                             break;
                         }
                     }
@@ -137,14 +141,16 @@ public class KnightChatServer {
             } finally {
                 // This client is going down!  Remove its name and its print
                 // writer from the sets, and close its socket.
-                if (name != null) {
-                    System.out.println("INFO: User " + name + " is logging out.");
-                    out.println("INFO " + name + " disconnected");
-                    names.remove(name);
-                } else System.out.println("WARN: User w/o name is logging out");
                 if (out != null) {
                     writers.remove(out);
                 }
+                if (name != null) {
+                    System.out.println("INFO: User " + name + " is logging out.");
+                    for (PrintWriter writer : writers) {
+                        writer.println("INFO " + name + " disconnected");
+                    }
+                    names.remove(name);
+                } else System.out.println("WARN: User w/o name is logging out");
                 try {
                     socket.close();
                 } catch (IOException e) {
