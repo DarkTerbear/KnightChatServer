@@ -47,7 +47,6 @@ public class KnightChatServer {
                 listener.close();
                 System.out.println("INFO: KnightChat server stopped");
             }
-
         } catch (IOException e) {
             System.out.println("FATAL: Server startup failed. Cannot listen on port " + PORT);
             e.printStackTrace();
@@ -117,18 +116,20 @@ public class KnightChatServer {
                     }
 
                     if (input.startsWith("/")) {
-                        Iterator iterator = names.iterator();
-                        String outString = "INFO " + "Users in this server: ";
-                        while(iterator.hasNext()) {
-                            outString += iterator.next() + ", ";
+                        if (input.substring(1).equals("users")) {
+                            Iterator iterator = names.iterator();
+                            String outString = "INFO " + "Users in this server: ";
+                            while(iterator.hasNext()) {
+                                outString += iterator.next() + ", ";
+                            }
+                            outString = outString.substring(0, outString.length() - 2);
+                            out.println(outString);
                         }
-                        outString = outString.substring(0, outString.length() - 2);
-                        out.println(outString);
                     } else {
                         for (PrintWriter writer : writers) {
-                            System.out.println("MESSAGE " + name + ": " + input);
                             writer.println("MESSAGE " + name + ": " + input);
                         }
+                        System.out.println("MESSAGE " + name + ": " + input);
                     }
                 }
             } catch (IOException e) {
@@ -138,6 +139,7 @@ public class KnightChatServer {
                 // writer from the sets, and close its socket.
                 if (name != null) {
                     System.out.println("INFO: User " + name + " is logging out.");
+                    out.println("INFO " + name + " disconnected");
                     names.remove(name);
                 } else System.out.println("WARN: User w/o name is logging out");
                 if (out != null) {
